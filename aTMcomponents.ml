@@ -32,10 +32,18 @@ type action =
    initializing the account database *)
 type account_spec = {name : string; id : id; balance : int} ;;
 
+type account_spec_ref = {name : string; id : id; balance : int ref} ;;
+
 (* initialize accts -- Establishes a database of accounts, each with a
    name, aribtrary id, and balance. The names and balances are
    initialized as per the `accts` provided. *)
-val initialize : account_spec list -> unit ;;
+
+let users : account_spec_ref list ref = ref [] ;;
+
+let initialize (init : account_spec list) : unit =
+  List.iter (fun x -> users := {name : x.name; id : x.id; balance : ref x.balance}
+                      :: !users) init
+
 
 (*....................................................................
  Acquiring information from the customer
